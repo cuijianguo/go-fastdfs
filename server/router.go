@@ -24,6 +24,7 @@ func (c *Server) initRouter() {
 	mux.HandleFunc(fmt.Sprintf("%s/check_files_exist", groupRoute), c.CheckFilesExist)
 	mux.HandleFunc(fmt.Sprintf("%s/check_file_exist", groupRoute), c.CheckFileExist)
 	mux.HandleFunc(fmt.Sprintf("%s/upload", groupRoute), c.Upload)
+	mux.HandleFunc(fmt.Sprintf("%s/ssh-upload", groupRoute), c.SSHUpload)
 	mux.HandleFunc(fmt.Sprintf("%s/delete", groupRoute), c.RemoveFile)
 	mux.HandleFunc(fmt.Sprintf("%s/get_file_info", groupRoute), c.GetFileInfo)
 	mux.HandleFunc(fmt.Sprintf("%s/sync", groupRoute), c.Sync)
@@ -44,5 +45,6 @@ func (c *Server) initRouter() {
 	mux.HandleFunc(fmt.Sprintf("%s/gen_google_secret", groupRoute), c.GenGoogleSecret)
 	mux.HandleFunc(fmt.Sprintf("%s/gen_google_code", groupRoute), c.GenGoogleCode)
 	mux.Handle(fmt.Sprintf("%s/static/", groupRoute), http.StripPrefix(fmt.Sprintf("%s/static/", groupRoute), http.FileServer(http.Dir("./static"))))
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	mux.HandleFunc("/"+Config().Group+"/", c.Download)
 }
