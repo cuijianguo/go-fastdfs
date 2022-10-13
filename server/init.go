@@ -304,10 +304,16 @@ func (c *Server) initComponent(isReload bool) {
 		}
 	}
 	if Config().ReadTimeout == 0 {
-		Config().ReadTimeout = 60 * 10
+		Config().ReadTimeout = 60 * 30
 	}
 	if Config().WriteTimeout == 0 {
-		Config().WriteTimeout = 60 * 10
+		Config().WriteTimeout = 60 * 30
+	}
+	if Config().ReadHeaderTimeout == 0 {
+		Config().ReadHeaderTimeout = 60 * 10
+	}
+	if Config().IdleTimeout == 0 {
+		Config().IdleTimeout = 60 * 10
 	}
 	if Config().SyncWorker == 0 {
 		Config().SyncWorker = 200
