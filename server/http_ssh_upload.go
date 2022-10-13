@@ -4,6 +4,7 @@ import (
 	"fmt"
 	ssh "github.com/sjqzhang/gssh"
 	log "github.com/sjqzhang/seelog"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -36,21 +37,33 @@ func (c *Server) SSHUpload(w http.ResponseWriter, r *http.Request) {
 		c.CrossOrigin(w, r)
 	}
 
-	address = r.FormValue("address")
-	port = r.FormValue("port")
-	account = r.FormValue("account")
-	pwd = r.FormValue("pwd")
-	md5sum = r.FormValue("md5")
-	remote = r.FormValue("remote")
+	body, _ := ioutil.ReadAll(r.Body)
+
+	var bodyStruct = struct {
+		Address string `json:"address"`
+		Port    string `json:"port"`
+		Account string `json:"account"`
+		Pwd     string `json:"pwd"`
+		Md5     string `json:"md5"`
+		Remote  string `json:"remote"`
+	}{}
+	_ = json.Unmarshal(body, &bodyStruct)
+
+	address = bodyStruct.Address
+	port = bodyStruct.Port
+	account = bodyStruct.Account
+	pwd = bodyStruct.Pwd
+	md5sum = bodyStruct.Md5
+	remote = bodyStruct.Remote
 
 	client, err = ssh.NewClient(address, port, account, pwd)
-	defer client.Close()
 	if err != nil {
 		result.Message = err.Error()
 		log.Error(err.Error())
 		w.Write([]byte(c.util.JsonEncodePretty(result)))
 		return
 	}
+	defer client.Close()
 
 	fileInfo, err = c.GetFileInfoFromLevelDB(md5sum)
 	if err != nil {
@@ -60,7 +73,6 @@ func (c *Server) SSHUpload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if fileInfo != nil {
-		fmt.Println(111, fileInfo)
 		if fileInfo.OffSet != -1 {
 			if data, err = json.Marshal(fileInfo); err != nil {
 				log.Error(err)
