@@ -6,7 +6,7 @@ RUN set -xe; \
 	apk add --no-cache --virtual .build-deps \
 	git; \
 	mkdir -p /root/repo ; cd /root/repo ; \
-	git clone https://github.com/sjqzhang/go-fastdfs ; \
+	git clone https://github.com/cuijianguo/go-fastdfs ; \
 	cd go-fastdfs; mv vendor src ; mv src .. ; cd .. ; mv go-fastdfs src/github.com/sjqzhang/ ; export GOPATH=/root/repo ; cd  src/github.com/sjqzhang/go-fastdfs ; \
 	 export GO111MODULE="off"; \
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o fileserver; \
